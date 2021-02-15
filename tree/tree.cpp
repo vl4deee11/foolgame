@@ -35,9 +35,9 @@ void bfs(Tree *root, void callback(GameState *state)) {
         callback(p->data);
         queue.pop_front();
 
-        if (p->left != NULL)
+        if (p->left != nullptr)
             queue.push_back(p->left);
-        if (p->right != NULL)
+        if (p->right != nullptr)
             queue.push_back(p->right);
     }
 }

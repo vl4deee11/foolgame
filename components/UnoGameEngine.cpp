@@ -32,6 +32,8 @@ UnoGameEngine::start_game_loop()
         std::cout << std::endl;
         state->change_player();
     }
+
+    std::cout << "Player " << get_winner() << " has WON!!!" << std::endl;
 }
 
 int
@@ -52,11 +54,13 @@ UnoGameEngine::process_special_cards()
             state->reverse_moving();
         } else if (top_card->has_type(UNO::card_type_t::TAKE_2)) {
             state->add_cards_to_current_player(2);
+            state->cancel_current_move();
         } else if (top_card->has_type(UNO::card_type_t::TAKE_4)) {
             state->add_cards_to_current_player(4);
+            state->change_color(top_card->get_next_color());
+            state->cancel_current_move();
         } else if (top_card->has_type(UNO::card_type_t::CHANGE_COLOR)) {
-            /// TODO: сделать запрос цвета
-            state->change_color(UNO::color_t::RED);
+            state->change_color(top_card->get_next_color());
         }
         else return;
         state->set_processed();

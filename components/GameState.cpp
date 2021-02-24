@@ -4,7 +4,7 @@
 
 
 GameState::GameState(DeckInterface * deck, size_t card_in_hand)
-        : deck(deck), top_card(nullptr), card_in_hand(card_in_hand)
+        : deck(deck), top_card(), card_in_hand(card_in_hand)
         , current_player(0), cancel_move(false), reversed_order(false)
         , need_process_card(true), virtual_color(UNO::color_t::NOTHING)
 { }
@@ -14,14 +14,14 @@ GameState::set_top_card(Card* card)
 {
     need_process_card = true;
     virtual_color = UNO::color_t::NOTHING;
-    top_card = card;
+    top_card = *card;
     deck->discard(card);
 }
 
 Card *
 GameState::get_top_card()
 {
-    return top_card;
+    return &top_card;
 }
 
 void
@@ -30,8 +30,8 @@ GameState::init() {
 
     std::cout << "Initializing game state: " << std::endl
               << "\tcard_in_hands = " << card_in_hand << std::endl
-              << "\ttop_card = (" << UNO::color_to_string(top_card->get_color()) << ", "
-                                  << UNO::type_to_string(top_card->get_type()) << ")" << std::endl
+              << "\ttop_card = (" << UNO::color_to_string(get_top_card()->get_color()) << ", "
+                                  << UNO::type_to_string(get_top_card()->get_type()) << ")" << std::endl
               << "\tcurrent_player = " << current_player << std::endl;
 }
 
@@ -75,7 +75,7 @@ GameState::add_cards_to_current_player(size_t count)
 void
 GameState::change_color(UNO::color_t color)
 {
-    virtual_color = color;
+    top_card.set_color(color);
 }
 
 bool
@@ -122,8 +122,8 @@ GameState::make_move()
     if (new_card != nullptr) {
         set_top_card(new_card);
         std::cout << "Player " << current_player << " make move: ("
-                  << UNO::color_to_string(top_card->get_color()) << ", "
-                  << UNO::type_to_string(top_card->get_type()) << ")" << std::endl;
+                  << UNO::color_to_string(get_top_card()->get_color()) << ", "
+                  << UNO::type_to_string(get_top_card()->get_type()) << ")" << std::endl;
     }
 }
 

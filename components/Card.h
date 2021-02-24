@@ -12,7 +12,8 @@
 class Card {
 public:
 //    constexpr
-    Card(UNO::color_t color = UNO::color_t::NOTHING, UNO::card_type_t type = UNO::card_type_t::NOTHING);
+    Card(UNO::color_t color = UNO::color_t::NOTHING, UNO::card_type_t type = UNO::card_type_t::NOTHING,
+         UNO::color_t next_color = UNO::color_t::NOTHING);
 
 //    constexpr
     Card(Card&) noexcept;
@@ -38,16 +39,25 @@ public:
     bool
     has_type(UNO::card_type_t);
 
-    UNO::color_t
+    [[nodiscard]] UNO::color_t
     get_color() const;
 
-    UNO::card_type_t
+    [[nodiscard]] UNO::card_type_t
     get_type() const;
 
+    [[nodiscard]] UNO::color_t
+    get_next_color() const;
+
+    void
+    set_color(UNO::color_t);
+
+    void
+    set_next_color(UNO::color_t);
 
 private:
     UNO::color_t color;
     UNO::card_type_t type;
+    UNO::color_t next_color;
 };
 
 

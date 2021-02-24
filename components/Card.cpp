@@ -1,8 +1,8 @@
 #include "Card.h"
 
 //constexpr
-Card::Card(UNO::color_t color, UNO::card_type_t type)
-    : color(color), type(type)
+Card::Card(UNO::color_t color, UNO::card_type_t type, UNO::color_t next_color)
+    : color(color), type(type), next_color(next_color)
 {}
 
 //constexpr
@@ -16,6 +16,7 @@ Card::operator=(UNO::card_prototype const& card)
 {
     this->color = card.color;
     this->type = card.type;
+    this->next_color = UNO::color_t::NOTHING;
 
     return *this;
 }
@@ -26,7 +27,7 @@ Card::Card(Card &card) noexcept
 {}
 
 Card::Card(Card&& card) noexcept
-    : color(card.color), type(card.type)
+    : color(card.color), type(card.type), next_color(card.next_color)
 {}
 
 bool
@@ -59,4 +60,20 @@ swap(Card &a, Card &b)
 {
     std::swap(a.color, b.color);
     std::swap(a.type, b.type);
+}
+
+void
+Card::set_color(UNO::color_t color)
+{
+    this->color = color;
+}
+
+void
+Card::set_next_color(UNO::color_t next)
+{
+    this->next_color = next;
+}
+
+UNO::color_t Card::get_next_color() const {
+    return next_color;
 }

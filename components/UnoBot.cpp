@@ -26,6 +26,8 @@ UnoBot::make_move() {
     }
 
     hand.remove(best);
+    if (!hand.empty() && best != nullptr)
+        best->set_next_color(hand.front()->get_color());
 
     return best;
 }
@@ -46,7 +48,9 @@ UnoBot::take_cards(size_t count)
 bool UnoBot::can_move(Card * card) {
     auto top_card = state->get_top_card();
 
-    return top_card->has_color(card->get_color()) || top_card->has_type(card->get_type());
+    return card->has_color(UNO::color_t::BLACK)
+        || top_card->has_color(card->get_color())
+        || top_card->has_type(card->get_type());
 }
 
 std::list<Card *> * UnoBot::get_hand() {

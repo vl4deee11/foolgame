@@ -55,7 +55,7 @@ public:
     Card *
     get_next_card();
 
-    size_t
+    [[nodiscard]] size_t
     get_card_in_hand() const;
 
     void
@@ -64,7 +64,7 @@ public:
     void
     print_info_about_player();
 
-    bool
+    [[nodiscard]] bool
     need_process_top_card() const;
 
     void
@@ -75,7 +75,7 @@ public:
 
 private:
     DeckInterface * deck;
-    Card * top_card;
+    Card top_card;
     size_t card_in_hand;
     int current_player;
     bool cancel_move;

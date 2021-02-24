@@ -15,6 +15,7 @@ GameState::set_top_card(Card* card)
     need_process_card = true;
     virtual_color = UNO::color_t::NOTHING;
     top_card = card;
+    deck->discard(card);
 }
 
 Card *
@@ -117,10 +118,13 @@ GameState::add_bot(UnoBot * bot)
 void
 GameState::make_move()
 {
-    set_top_card(bots[current_player]->make_move());
-    std::cout << "Player " << current_player << " make move: ("
-              << UNO::color_to_string(top_card->get_color()) << ", "
-              << UNO::type_to_string(top_card->get_type()) << ")" << std::endl;
+    auto new_card = bots[current_player]->make_move();
+    if (new_card != nullptr) {
+        set_top_card(new_card);
+        std::cout << "Player " << current_player << " make move: ("
+                  << UNO::color_to_string(top_card->get_color()) << ", "
+                  << UNO::type_to_string(top_card->get_type()) << ")" << std::endl;
+    }
 }
 
 void
@@ -129,7 +133,7 @@ GameState::print_info_about_player()
     auto bot = bots[current_player];
 
     std::cout << "Player " << current_player << ": " << std::endl
-              << "\thas " << bot->get_hand()->size() << " cards in hand" << std::endl;
+              << "\thas " << bot->get_hand()->size() << " all_cards in hand" << std::endl;
 }
 
 void

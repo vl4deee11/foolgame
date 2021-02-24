@@ -48,7 +48,6 @@ UnoGameEngine::process_special_cards()
     if (state->need_process_top_card()) {
         if (top_card->has_type(UNO::card_type_t::CANCEL)) {
             state->cancel_current_move();
-            state->set_processed();
         } else if (top_card->has_type(UNO::card_type_t::REVERSE)) {
             state->reverse_moving();
         } else if (top_card->has_type(UNO::card_type_t::TAKE_2)) {
@@ -59,6 +58,8 @@ UnoGameEngine::process_special_cards()
             /// TODO: сделать запрос цвета
             state->change_color(UNO::color_t::RED);
         }
+        else return;
+        state->set_processed();
     }
 }
 

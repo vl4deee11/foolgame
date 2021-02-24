@@ -18,7 +18,7 @@ UnoBot::make_move() {
         }
     }
 
-    while (best == nullptr) {
+    if (best == nullptr) {
         hand.push_back(state->get_next_card());
         if (can_move(hand.back())) {
             best = hand.back();

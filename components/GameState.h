@@ -14,7 +14,7 @@ class UnoBot;
 class GameState {
 public:
     explicit
-    GameState(DeckInterface * deck, size_t card_in_hand = 6);
+    GameState(DeckInterface *deck, size_t card_in_hand = 6);
 
     void
     add_bot(UnoBot *);
@@ -23,7 +23,7 @@ public:
     get_top_card();
 
     void
-    set_top_card(Card * card);
+    set_top_card(Card *card);
 
     void
     init();
@@ -73,8 +73,17 @@ public:
     void
     change_player();
 
+    std::vector<Card *>
+    get_all_cards();
+
+    std::set<Card *>
+    get_current_deck();
+
+    std::set<Card *>
+    get_discard_deck();
+
 private:
-    DeckInterface * deck;
+    DeckInterface *deck;
     Card top_card;
     size_t card_in_hand;
     int current_player;

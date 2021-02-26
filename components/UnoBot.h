@@ -2,6 +2,7 @@
 #define FOOLGAME_UNOBOT_H
 
 #include <list>
+#include <set>
 #include "Card.h"
 #include "Deck.h"
 #include "GameState.h"
@@ -10,7 +11,7 @@
 class UnoBot {
 public:
     explicit
-    UnoBot(GameState * state);
+    UnoBot(GameState *state);
 
     Card *
     make_move();
@@ -27,10 +28,15 @@ public:
     std::list<Card *> *
     get_hand();
 
+    std::set<Card *>
+    get_hand_set();
+
 
 private:
-    GameState * state;
+    GameState *state;
     std::list<Card *> hand;
+
+    std::list<Card *> get_opponent_cards();
 };
 
 

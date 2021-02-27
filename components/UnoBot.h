@@ -24,7 +24,7 @@ public:
     take_cards(size_t count);
 
     bool
-    can_move(Card *);
+    can_move(Card *,  GameState *p_state = nullptr);
 
     std::list<Card *> *
     get_hand();
@@ -39,9 +39,6 @@ private:
 
     std::list<Card *>
     get_opponent_cards();
-
-    static bool
-    can_move(Card *card, GameState *pState);
 
     Node *
     create_new_node(Node *parent, GameState *p_state, Card *card, std::list<Card *> *l_hand);

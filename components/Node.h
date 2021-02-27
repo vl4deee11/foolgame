@@ -6,7 +6,6 @@
 #include "Card.h"
 
 struct Node {
-    explicit
     Node(GameState *p_state, uint_fast8_t lvl);
 
     ~Node();
@@ -15,15 +14,15 @@ struct Node {
     add_children(Node *tree);
 
     void
-    add_point(int p);
+    add_estimation(int p);
 
     uint_fast8_t level;
     GameState *state;
     Node *parent;
     Card *card;
     std::list<Card *> hand;
-    std::vector<Node *> children;
-    std::vector<int> points;
+    std::list<Node *> children;
+    std::vector<int> estimation;
 };
 
 void

@@ -41,36 +41,37 @@ UnoBot::make_move() {
         if (is_leaf) leafs.push_back(node);
     }
 
-    std::map<int, Node *> points_to_node;
+    std::map<int, Node *> estimation_to_node;
     while (!leafs.empty()) {
         Node *node = leafs.front();
         leafs.pop_front();
         if (node->parent != nullptr) {
             if (node->children.empty()) {
                 // TODO: call a heuristic function here (now use [rand()])
-                auto p = (node->level & 1) != 0 ? rand() : -rand();
-                points_to_node[p] = node;
-                node->parent->add_point(p);
+                auto e = (node->level & 1) != 0 ? rand() : -rand();
+                estimation_to_node[e] = node;
+                node->parent->add_estimation(e);
             } else if ((node->level & 1) != 0) {
-                auto max = std::max_element(node->points.begin(), node->points.end());
-                points_to_node[*max] = node;
-                node->parent->add_point(*max);
+                // TODO: save max - min in place
+                auto max = std::max_element(node->estimation.begin(), node->estimation.end());
+                estimation_to_node[*max] = node;
+                node->parent->add_estimation(*max);
             } else {
-                auto min = std::min_element(node->points.begin(), node->points.end());
-                points_to_node[*min] = node;
-                node->parent->add_point(*min);
+                auto min = std::min_element(node->estimation.begin(), node->estimation.end());
+                estimation_to_node[*min] = node;
+                node->parent->add_estimation(*min);
             }
             leafs.push_back(node->parent);
         }
     }
 
-    if (root->points.empty()) {
+    if (root->estimation.empty()) {
         clear(root);
         return nullptr;
     }
 
-    auto max = std::max_element(root->points.begin(), root->points.end());
-    auto best_node = points_to_node[*max];
+    auto max = std::max_element(root->estimation.begin(), root->estimation.end());
+    auto best_node = estimation_to_node[*max];
     Card *result_card = nullptr;
     if (best_node != nullptr) {
         result_card = best_node->card;
@@ -92,25 +93,15 @@ UnoBot::take_cards(size_t count) {
 }
 
 bool
-UnoBot::can_move(Card *card) {
-    auto top_card = state->get_top_card();
-
-    return card->has_color(UNO::color_t::BLACK)
-           || top_card->has_color(card->get_color())
-           || top_card->has_type(card->get_type());
-}
-
-bool
 UnoBot::can_move(Card *card, GameState *p_state) {
+    if (p_state == nullptr) p_state = state;
     auto top_card = p_state->get_top_card();
 
-    // TODO:handle black cards
-    if (card->get_color() == UNO::color_t::BLACK) return false;
-
     return card->has_color(UNO::color_t::BLACK)
            || top_card->has_color(card->get_color())
            || top_card->has_type(card->get_type());
 }
+
 
 std::list<Card *> *
 UnoBot::get_hand() {
@@ -156,8 +147,8 @@ UnoBot::create_new_node(Node *parent, GameState *p_state, Card *card, std::list<
     Node *node = new Node(curr_state, parent->level + 1);
     node->card = card;
     node->parent = parent;
-    node->hand = std::list<Card *>(*l_hand);
-    node->hand.remove_if([card](auto n_card) { return n_card == card; });
+    node->hand = *l_hand;
+    node->hand.remove(card);
 
     parent->add_children(node);
     return node;

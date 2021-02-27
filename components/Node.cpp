@@ -3,8 +3,6 @@
 Node::Node(GameState *p_state, uint_fast8_t lvl) {
     level = lvl;
     state = p_state;
-    children = std::vector<Node *>();
-    points = std::vector<int>();
     parent = nullptr;
 }
 
@@ -16,12 +14,13 @@ Node::add_children(Node *tree) {
 }
 
 void
-Node::add_point(int p) {
-    points.push_back(p);
+Node::add_estimation(int p) {
+    estimation.push_back(p);
 }
 
 void
 clear(struct Node *node) {
+    return;
     if (node != nullptr) {
         for (auto n : node->children) {
             clear(n);

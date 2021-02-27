@@ -9,6 +9,8 @@ struct Node {
     explicit
     Node(GameState *p_state, uint_fast8_t lvl);
 
+    ~Node();
+
     void
     add_children(Node *tree);
 

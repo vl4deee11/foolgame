@@ -1,14 +1,15 @@
-
+#include <bits/stdc++.h>
 #include "Node.h"
 
-Node
-::Node(GameState *p_state, uint_fast8_t lvl) {
+Node::Node(GameState *p_state, uint_fast8_t lvl) {
     level = lvl;
     state = p_state;
     children = std::vector<Node *>();
     points = std::vector<int>();
     parent = nullptr;
 }
+
+Node::~Node() {}
 
 void
 Node::add_children(Node *tree) {
@@ -21,9 +22,8 @@ Node::add_point(int p) {
 }
 
 void
-clear(struct Node *node)
-{
-    if(node != nullptr) {
+clear(struct Node *node) {
+    if (node != nullptr) {
         for (auto n : node->children) {
             clear(n);
         }

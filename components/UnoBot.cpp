@@ -64,6 +64,11 @@ UnoBot::make_move() {
         }
     }
 
+    if (root->points.empty()) {
+        clear(root);
+        return nullptr;
+    }
+
     auto max = std::max_element(root->points.begin(), root->points.end());
     auto best_node = points_to_node[*max];
     Card *result_card = nullptr;
@@ -107,11 +112,13 @@ UnoBot::can_move(Card *card, GameState *p_state) {
            || top_card->has_type(card->get_type());
 }
 
-std::list<Card *> *UnoBot::get_hand() {
+std::list<Card *> *
+UnoBot::get_hand() {
     return &hand;
 }
 
-std::set<Card *> UnoBot::get_hand_set() {
+std::set<Card *>
+UnoBot::get_hand_set() {
     std::set<Card *> s;
     for (Card *card : *get_hand()) {
         s.insert(card);

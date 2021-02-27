@@ -63,20 +63,28 @@ UnoBot::make_move() {
             leafs.push_back(node->parent);
         }
     }
-
+    
     if (!estimation_to_node.contains(root->max_estimation)) {
         clear(root);
-        return nullptr;
+        int max = 0;
+        Card *best_card = nullptr;
+        for (auto child : root->children) {
+            if (child->max_estimation > max) {
+                max = child->max_estimation;
+                best_card = child->card;
+            }
+        }
+        return best_card;
     }
 
     auto best_node = estimation_to_node[root->max_estimation];
-    Card *result_card = nullptr;
+    Card *best_card = nullptr;
     if (best_node != nullptr) {
-        result_card = best_node->card;
+        best_card = best_node->card;
     }
 
     clear(root);
-    return result_card;
+    return best_card;
 }
 
 bool

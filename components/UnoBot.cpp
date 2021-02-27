@@ -52,11 +52,13 @@ UnoBot::make_move() {
                 estimation_to_node[e] = node;
                 node->parent->add_estimation(e);
                 continue;
-            } else if ((node->level & 1) != 0) estimation_to_node[node->max_estimation] = node;
-            else estimation_to_node[node->min_estimation] = node;
-
-            node->parent->add_estimation(node->max_estimation);
-            node->parent->add_estimation(node->min_estimation);
+            } else if ((node->level & 1) != 0) {
+                estimation_to_node[node->max_estimation] = node;
+                node->parent->add_estimation(node->max_estimation);
+            } else {
+                estimation_to_node[node->min_estimation] = node;
+                node->parent->add_estimation(node->min_estimation);
+            }
 
             leafs.push_back(node->parent);
         }

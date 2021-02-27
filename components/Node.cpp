@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "Node.h"
 
 Node::Node(GameState *p_state, uint_fast8_t lvl) {

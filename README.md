@@ -1,2 +1,2 @@
 # foolgame
-Lab project "fool card game"
+Lab project "uno card game"

@@ -47,7 +47,7 @@ UnoBot::make_move() {
         leafs.pop_front();
         if (node->parent != nullptr) {
             if (node->children.empty()) {
-                // TODO: call a heuristic function here
+                // TODO: call a heuristic function here (now use [rand()])
                 auto p = (node->level & 1) != 0 ? rand() : -rand();
                 points_to_node[p] = node;
                 node->parent->add_point(p);

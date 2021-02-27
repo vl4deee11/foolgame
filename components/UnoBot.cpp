@@ -1,4 +1,6 @@
 #include <deque>
+#include<algorithm>
+#include <map>
 #include "UnoBot.h"
 #include "Node.h"
 
@@ -25,26 +27,52 @@ UnoBot::make_move() {
     while (!dq.empty()) {
         Node *node = dq.back();
         dq.pop_back();
-        if (node->level >= 3) {
+        if (node->level == 3) {
             leafs.push_back(node);
             continue;
         }
-        if (node->level == 1) {
-            for (auto card : opponent_cards) {
-                if (can_move(card, node->state)) {
-                    dq.push_back(create_new_node(node, node->state, card, &opponent_cards));
-                }
+        bool is_leaf = true;
+        for (auto card : node->level == 1 ? opponent_cards : node->parent->hand) {
+            if (can_move(card, node->state)) {
+                is_leaf = false;
+                dq.push_back(create_new_node(node, node->state, card, &node->parent->hand));
             }
-        } else {
-            for (auto card : node->parent->hand) {
-                if (can_move(card, node->state)) {
-                    dq.push_back(create_new_node(node, node->state, card, &node->parent->hand));
-                }
+        }
+        if (is_leaf) leafs.push_back(node);
+    }
+
+    std::map<int, Node *> points_to_node;
+    while (!leafs.empty()) {
+        Node *node = leafs.front();
+        leafs.pop_front();
+        if (node->parent != nullptr) {
+            if (node->children.empty()) {
+                // TODO: call a heuristic function here
+                auto p = (node->level & 1) != 0 ? rand() : -rand();
+                points_to_node[p] = node;
+                node->parent->add_point(p);
+            } else if ((node->level & 1) != 0) {
+                auto max = std::max_element(node->points.begin(), node->points.end());
+                points_to_node[*max] = node;
+                node->parent->add_point(*max);
+            } else {
+                auto min = std::min_element(node->points.begin(), node->points.end());
+                points_to_node[*min] = node;
+                node->parent->add_point(*min);
             }
+            leafs.push_back(node->parent);
         }
     }
 
-    return hand.back();
+    auto max = std::max_element(root->points.begin(), root->points.end());
+    auto best_node = points_to_node[*max];
+    Card *result_card = nullptr;
+    if (best_node != nullptr) {
+        result_card = best_node->card;
+    }
+
+    clear(root);
+    return result_card;
 }
 
 bool
@@ -70,6 +98,9 @@ UnoBot::can_move(Card *card) {
 bool
 UnoBot::can_move(Card *card, GameState *p_state) {
     auto top_card = p_state->get_top_card();
+
+    // TODO:handle black cards
+    if (card->get_color() == UNO::color_t::BLACK) return false;
 
     return card->has_color(UNO::color_t::BLACK)
            || top_card->has_color(card->get_color())
@@ -116,6 +147,7 @@ UnoBot::create_new_node(Node *parent, GameState *p_state, Card *card, std::list<
     curr_state->set_top_card(card);
 
     Node *node = new Node(curr_state, parent->level + 1);
+    node->card = card;
     node->parent = parent;
     node->hand = std::list<Card *>(*l_hand);
     node->hand.remove_if([card](auto n_card) { return n_card == card; });

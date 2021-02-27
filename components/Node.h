@@ -17,11 +17,11 @@ struct Node {
     add_estimation(int p);
 
     uint_fast8_t level;
+    int max_estimation;
+    int min_estimation;
     GameState *state;
     Node *parent;
     Card *card;
-    int max_estimation;
-    int min_estimation;
     std::list<Card *> hand;
     std::list<Node *> children;
 };

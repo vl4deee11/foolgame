@@ -51,6 +51,7 @@ UnoBot::make_move() {
                 auto e = (node->level & 1) != 0 ? rand() : -rand();
                 estimation_to_node[e] = node;
                 node->parent->add_estimation(e);
+                continue;
             } else if ((node->level & 1) != 0) estimation_to_node[node->max_estimation] = node;
             else estimation_to_node[node->min_estimation] = node;
 

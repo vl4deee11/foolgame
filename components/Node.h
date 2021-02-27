@@ -20,9 +20,10 @@ struct Node {
     GameState *state;
     Node *parent;
     Card *card;
+    int max_estimation;
+    int min_estimation;
     std::list<Card *> hand;
     std::list<Node *> children;
-    std::vector<int> estimation;
 };
 
 void

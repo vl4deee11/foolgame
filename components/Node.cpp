@@ -15,12 +15,12 @@ Node::add_children(Node *tree) {
 
 void
 Node::add_estimation(int p) {
-    estimation.push_back(p);
+    max_estimation = std::max(max_estimation, p);
+    min_estimation = std::min(min_estimation, p);
 }
 
 void
 clear(struct Node *node) {
-    return;
     if (node != nullptr) {
         for (auto n : node->children) {
             clear(n);

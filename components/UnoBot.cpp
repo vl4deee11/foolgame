@@ -51,27 +51,22 @@ UnoBot::make_move() {
                 auto e = (node->level & 1) != 0 ? rand() : -rand();
                 estimation_to_node[e] = node;
                 node->parent->add_estimation(e);
-            } else if ((node->level & 1) != 0) {
-                // TODO: save max - min in place
-                auto max = std::max_element(node->estimation.begin(), node->estimation.end());
-                estimation_to_node[*max] = node;
-                node->parent->add_estimation(*max);
-            } else {
-                auto min = std::min_element(node->estimation.begin(), node->estimation.end());
-                estimation_to_node[*min] = node;
-                node->parent->add_estimation(*min);
-            }
+            } else if ((node->level & 1) != 0) estimation_to_node[node->max_estimation] = node;
+            else estimation_to_node[node->min_estimation] = node;
+
+            node->parent->add_estimation(node->max_estimation);
+            node->parent->add_estimation(node->min_estimation);
+
             leafs.push_back(node->parent);
         }
     }
 
-    if (root->estimation.empty()) {
+    if (!estimation_to_node.contains(root->max_estimation)) {
         clear(root);
         return nullptr;
     }
 
-    auto max = std::max_element(root->estimation.begin(), root->estimation.end());
-    auto best_node = estimation_to_node[*max];
+    auto best_node = estimation_to_node[root->max_estimation];
     Card *result_card = nullptr;
     if (best_node != nullptr) {
         result_card = best_node->card;

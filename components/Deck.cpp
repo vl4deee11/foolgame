@@ -85,3 +85,13 @@ std::set<Card *> UnoDeck::get_current_deck() {
     }
     return s;
 }
+
+UnoDeck *UnoDeck::make_copy() {
+    auto *d = new UnoDeck();
+    std::copy(all_cards.begin(), all_cards.end(), d->all_cards.begin());
+    std::copy(all_cards_ptrs.begin(), all_cards_ptrs.end(), d->all_cards_ptrs.begin());
+    d->discard_deck = std::list<Card *>(discard_deck);
+    d->current_deck = std::list<Card *>(current_deck);
+    d->current = current;
+    return d;
+}

@@ -24,6 +24,8 @@ public:
     virtual std::set<Card *> get_current_deck() = 0;
 
     virtual std::set<Card *> get_discard_deck() = 0;
+
+    virtual DeckInterface *make_copy() = 0;
 };
 
 
@@ -42,6 +44,8 @@ public:
     std::set<Card *> get_current_deck() override;
 
     std::set<Card *> get_discard_deck() override;
+
+    UnoDeck *make_copy() override;
 
 protected:
     size_t current;

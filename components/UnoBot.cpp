@@ -1,4 +1,6 @@
+#include <deque>
 #include "UnoBot.h"
+#include "Node.h"
 
 
 UnoBot::UnoBot(GameState *state)
@@ -8,28 +10,41 @@ UnoBot::UnoBot(GameState *state)
 
 Card *
 UnoBot::make_move() {
-    /// TODO: написать класс Predictor
-    Card *best = nullptr;
     auto opponent_cards = get_opponent_cards();
+    Node *root = new Node(state, 0);
 
+    std::deque<Node *> dq;
+    //  prediction_root initialization from hand
     for (auto card : hand) {
         if (can_move(card)) {
-            best = card;
+            dq.push_back(create_new_node(root, state, card, &hand));
         }
     }
 
-    if (best == nullptr) {
-        hand.push_back(state->get_next_card());
-        if (can_move(hand.back())) {
-            best = hand.back();
+    std::deque<Node *> leafs;
+    while (!dq.empty()) {
+        Node *node = dq.back();
+        dq.pop_back();
+        if (node->level >= 3) {
+            leafs.push_back(node);
+            continue;
+        }
+        if (node->level == 1) {
+            for (auto card : opponent_cards) {
+                if (can_move(card, node->state)) {
+                    dq.push_back(create_new_node(node, node->state, card, &opponent_cards));
+                }
+            }
+        } else {
+            for (auto card : node->parent->hand) {
+                if (can_move(card, node->state)) {
+                    dq.push_back(create_new_node(node, node->state, card, &node->parent->hand));
+                }
+            }
         }
     }
 
-    hand.remove(best);
-    if (!hand.empty() && best != nullptr)
-        best->set_next_color(hand.front()->get_color());
-
-    return best;
+    return hand.back();
 }
 
 bool
@@ -43,8 +58,18 @@ UnoBot::take_cards(size_t count) {
         hand.push_back(state->get_next_card());
 }
 
-bool UnoBot::can_move(Card *card) {
+bool
+UnoBot::can_move(Card *card) {
     auto top_card = state->get_top_card();
+
+    return card->has_color(UNO::color_t::BLACK)
+           || top_card->has_color(card->get_color())
+           || top_card->has_type(card->get_type());
+}
+
+bool
+UnoBot::can_move(Card *card, GameState *p_state) {
+    auto top_card = p_state->get_top_card();
 
     return card->has_color(UNO::color_t::BLACK)
            || top_card->has_color(card->get_color())
@@ -63,7 +88,8 @@ std::set<Card *> UnoBot::get_hand_set() {
     return s;
 }
 
-std::list<Card *> UnoBot::get_opponent_cards() {
+std::list<Card *>
+UnoBot::get_opponent_cards() {
     std::list<Card *> r;
     auto hand_set = get_hand_set();
     auto all_cards = state->get_all_cards();
@@ -71,9 +97,29 @@ std::list<Card *> UnoBot::get_opponent_cards() {
     auto discard_deck = state->get_discard_deck();
 
     for (Card *c : all_cards) {
-        if (!current_deck.contains(c) && !discard_deck.contains(c) && !hand_set.contains(c)) {
+        auto not_in_current = !current_deck.contains(c);
+        auto not_in_discard = !discard_deck.contains(c);
+        auto not_in_hand = !hand_set.contains(c);
+        auto not_top_card = c != state->get_top_card();
+        if (not_in_current && not_in_discard && not_in_hand && not_top_card) {
             r.push_back(c);
         }
     }
     return r;
+}
+
+
+Node *
+UnoBot::create_new_node(Node *parent, GameState *p_state, Card *card, std::list<Card *> *l_hand) {
+    auto curr_state = new GameState(*p_state);
+    curr_state->deck = state->deck->make_copy();
+    curr_state->set_top_card(card);
+
+    Node *node = new Node(curr_state, parent->level + 1);
+    node->parent = parent;
+    node->hand = std::list<Card *>(*l_hand);
+    node->hand.remove_if([card](auto n_card) { return n_card == card; });
+
+    parent->add_children(node);
+    return node;
 }

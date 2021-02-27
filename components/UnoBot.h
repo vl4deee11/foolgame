@@ -6,6 +6,7 @@
 #include "Card.h"
 #include "Deck.h"
 #include "GameState.h"
+#include "Node.h"
 
 
 class UnoBot {
@@ -36,7 +37,14 @@ private:
     GameState *state;
     std::list<Card *> hand;
 
-    std::list<Card *> get_opponent_cards();
+    std::list<Card *>
+    get_opponent_cards();
+
+    static bool
+    can_move(Card *card, GameState *pState);
+
+    Node *
+    create_new_node(Node *parent, GameState *p_state, Card *card, std::list<Card *> *l_hand);
 };
 
 

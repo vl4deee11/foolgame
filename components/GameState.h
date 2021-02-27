@@ -82,14 +82,14 @@ public:
     std::set<Card *>
     get_discard_deck();
 
+    DeckInterface *deck{};
 private:
-    DeckInterface *deck;
     Card top_card;
-    size_t card_in_hand;
-    int current_player;
-    bool cancel_move;
-    bool reversed_order;
-    bool need_process_card;
+    size_t card_in_hand{};
+    int current_player{};
+    bool cancel_move{};
+    bool reversed_order{};
+    bool need_process_card{};
     UNO::color_t virtual_color;
 
     std::vector<UnoBot *> bots;

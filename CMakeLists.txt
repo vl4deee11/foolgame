@@ -12,4 +12,5 @@ add_executable(
         components/UnoRules.h components/Exceptions.h
         components/UnoGameEngine.cpp components/UnoGameEngine.h
         components/Node.cpp components/Node.h
+        components/Heuristics.cpp components/Heuristics.h
 )

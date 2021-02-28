@@ -14,7 +14,7 @@ Node::add_children(Node *tree) {
 }
 
 void
-Node::add_estimation(int p) {
+Node::add_estimation(float p) {
     max_estimation = std::max(max_estimation, p);
     min_estimation = std::min(min_estimation, p);
 }

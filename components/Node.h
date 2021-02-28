@@ -14,11 +14,11 @@ struct Node {
     add_children(Node *tree);
 
     void
-    add_estimation(int p);
+    add_estimation(float p);
 
     uint_fast8_t level;
-    int max_estimation;
-    int min_estimation;
+    float max_estimation;
+    float min_estimation;
     GameState *state;
     Node *parent;
     Card *card;

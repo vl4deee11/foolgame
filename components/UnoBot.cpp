@@ -3,7 +3,7 @@
 #include <map>
 #include "UnoBot.h"
 #include "Node.h"
-
+#include "Heuristics.h"
 
 UnoBot::UnoBot(GameState *state)
         : state(state) {
@@ -41,14 +41,14 @@ UnoBot::make_move() {
         if (is_leaf) leafs.push_back(node);
     }
 
-    std::map<int, Node *> estimation_to_node;
+    std::map<float, Node *> estimation_to_node;
     while (!leafs.empty()) {
         Node *node = leafs.front();
         leafs.pop_front();
         if (node->parent != nullptr) {
             if (node->children.empty()) {
                 // TODO: call a heuristic function here (now use [rand()])
-                auto e = (node->level & 1) != 0 ? rand() : -rand();
+                float e = (node->level & 1) != 0 ? heuristics_estimation(node) : -heuristics_estimation(node);
                 estimation_to_node[e] = node;
                 node->parent->add_estimation(e);
                 continue;
@@ -65,8 +65,7 @@ UnoBot::make_move() {
     }
     
     if (!estimation_to_node.contains(root->max_estimation)) {
-        clear(root);
-        int max = 0;
+        float max = 0;
         Card *best_card = nullptr;
         for (auto child : root->children) {
             if (child->max_estimation > max) {
@@ -74,6 +73,7 @@ UnoBot::make_move() {
                 best_card = child->card;
             }
         }
+        clear(root);
         return best_card;
     }
 

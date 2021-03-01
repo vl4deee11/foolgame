@@ -6,7 +6,7 @@ float
 heuristics_estimation(Node *node) {
     if (node->hand.empty()) return 10000.0;
     long diff_count = node->parent != nullptr ? -(node->hand.size() - node->parent->hand.size()) : node->hand.size();
-    std::set<Card *> curr_desk = node->state->get_current_deck();
+    std::set<Card *> curr_desk = node->state.get_current_deck();
     std::map<UNO::color_t, float> color_freq;
 
     for (auto card : curr_desk) {

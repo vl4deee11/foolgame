@@ -12,6 +12,7 @@
 class Card {
 public:
 //    constexpr
+    /// TODO: поменять next_color на Nothing и реализовать нормальное поведение
     Card(UNO::color_t color = UNO::color_t::NOTHING, UNO::card_type_t type = UNO::card_type_t::NOTHING,
          UNO::color_t next_color = UNO::color_t::NOTHING);
 

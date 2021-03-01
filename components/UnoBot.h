@@ -7,6 +7,7 @@
 #include "Deck.h"
 #include "GameState.h"
 #include "Node.h"
+#include "Predictor.h"
 
 
 class UnoBot {
@@ -34,14 +35,12 @@ public:
 
 
 private:
-    GameState *state;
-    std::list<Card *> hand;
-
     std::list<Card *>
     get_opponent_cards();
 
-    Node *
-    create_new_node(Node *parent, GameState *p_state, Card *card, std::list<Card *> *l_hand);
+    GameState *state;
+    std::list<Card *> hand;
+    Predictor predictor;
 };
 
 

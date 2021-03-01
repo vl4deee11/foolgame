@@ -5,8 +5,10 @@
 #include "GameState.h"
 #include "Card.h"
 
-struct Node {
-    Node(GameState *p_state, uint_fast8_t lvl);
+class Node {
+public:
+    Node(GameState *p_state, uint_fast8_t lvl, Node * parent,
+         Card * card, std::list<Card *> * hand, std::list<Node *> * children);
 
     ~Node();
 
@@ -16,17 +18,14 @@ struct Node {
     void
     add_estimation(float p);
 
+    GameState state;
     uint_fast8_t level;
-    float max_estimation;
-    float min_estimation;
-    GameState *state;
     Node *parent;
     Card *card;
     std::list<Card *> hand;
     std::list<Node *> children;
+    float max_estimation;
+    float min_estimation;
 };
-
-void
-clear(struct Node *node);
 
 #endif //FOOLGAME_NODE_H
